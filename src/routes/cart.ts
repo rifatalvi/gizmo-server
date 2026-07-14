@@ -1,6 +1,6 @@
 import { Router, type Request, type Response } from 'express';
-import { db } from '../db.js';
-import type { Cart, CartItem } from '../types.js';
+import { db } from '../db';
+import type { Cart, CartItem } from '../types';
 
 const router = Router();
 
