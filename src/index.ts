@@ -5,6 +5,7 @@ import { connectToMongoDB } from './db.js';
 import productsRouter from './routes/products.js';
 import cartRouter from './routes/cart.js';
 import ordersRouter from './routes/orders.js';
+import checkoutRouter from './routes/checkout.js';
 
 const app = express();
 const PORT = process.env.PORT ?? 5000;
@@ -25,6 +26,7 @@ app.get('/health', (_req, res) => {
 app.use('/api/products', productsRouter);
 app.use('/api/cart', cartRouter);
 app.use('/api/orders', ordersRouter);
+app.use('/api/checkout', checkoutRouter);
 
 // ── Start ───────────────────────────────────────────────────
 async function start() {
