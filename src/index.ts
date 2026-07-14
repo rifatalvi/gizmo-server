@@ -27,7 +27,7 @@ app.use('/api/products', productsRouter);
 app.use('/api/cart', cartRouter);
 app.use('/api/orders', ordersRouter);
 app.use('/api/checkout', checkoutRouter);
-
+// ajjaj
 // ── Start ───────────────────────────────────────────────────
 async function start() {
     await connectToMongoDB();
