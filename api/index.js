@@ -2,6 +2,27 @@ require('dotenv/config');
 const express = require('express');
 const cors = require('cors');
 const { MongoClient, ObjectId } = require('mongodb');
+const { jwtVerify } = require('jose');
+
+// ── JWT Auth Middleware ──────────────────────────────────────────
+const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change-in-production';
+
+async function authenticate(req, res, next) {
+    const header = req.headers.authorization;
+    if (!header || !header.startsWith('Bearer ')) {
+        return res.status(401).json({ message: 'No token provided' });
+    }
+    const token = header.split(' ')[1];
+    if (!token) return res.status(401).json({ message: 'Malformed token' });
+    try {
+        const secretKey = new TextEncoder().encode(JWT_SECRET);
+        const { payload } = await jwtVerify(token, secretKey);
+        req.userId = payload.userId;
+        next();
+    } catch (err) {
+        return res.status(401).json({ message: 'Invalid or expired token' });
+    }
+}
 
 // ── DB ─────────────────────────────────────────────────────────
 const mongoUri = process.env.MONGODB_URL;
@@ -120,7 +141,7 @@ productsRouter.get('/:id', async (req, res) => {
     }
 });
 
-productsRouter.post('/', async (req, res) => {
+productsRouter.post('/', authenticate, async (req, res) => {
     try {
         const col = db().collection('products');
         const product = { ...req.body, createdAt: new Date() };
@@ -131,7 +152,7 @@ productsRouter.post('/', async (req, res) => {
     }
 });
 
-productsRouter.put('/:id', async (req, res) => {
+productsRouter.put('/:id', authenticate, async (req, res) => {
     try {
         const col = db().collection('products');
         const { _id, ...update } = req.body;
@@ -145,7 +166,7 @@ productsRouter.put('/:id', async (req, res) => {
     }
 });
 
-productsRouter.delete('/:id', async (req, res) => {
+productsRouter.delete('/:id', authenticate, async (req, res) => {
     try {
         const col = db().collection('products');
         await col.deleteOne({ _id: new ObjectId(req.params.id) });

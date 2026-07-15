@@ -2,6 +2,7 @@ import { Router, type Request, type Response } from 'express';
 import { ObjectId } from 'mongodb';
 import { db } from '../db';
 import type { Product } from '../types';
+import { authenticate } from '../middleware/auth';
 
 const router = Router();
 
@@ -115,8 +116,8 @@ router.get('/:id', async (req: Request, res: Response) => {
     }
 });
 
-// POST /api/products
-router.post('/', async (req: Request, res: Response) => {
+// POST /api/products  (admin only)
+router.post('/', authenticate, async (req: Request, res: Response) => {
     try {
         const col = db().collection<Product>('products');
         const product: Product = { ...req.body, createdAt: new Date() };
@@ -128,8 +129,8 @@ router.post('/', async (req: Request, res: Response) => {
     }
 });
 
-// PUT /api/products/:id
-router.put('/:id', async (req: Request, res: Response) => {
+// PUT /api/products/:id  (admin only)
+router.put('/:id', authenticate, async (req: Request, res: Response) => {
     try {
         const col = db().collection<Product>('products');
         const { _id, ...update } = req.body;
@@ -144,8 +145,8 @@ router.put('/:id', async (req: Request, res: Response) => {
     }
 });
 
-// DELETE /api/products/:id
-router.delete('/:id', async (req: Request, res: Response) => {
+// DELETE /api/products/:id  (admin only)
+router.delete('/:id', authenticate, async (req: Request, res: Response) => {
     try {
         const col = db().collection<Product>('products');
         await col.deleteOne({ _id: new ObjectId(req.params.id as string) });
