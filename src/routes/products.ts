@@ -31,11 +31,11 @@ router.get('/', async (req: Request, res: Response) => {
             filter.category = category;
         }
 
-        // Featured / deal flags
+
         if (featured === 'true') filter.featured = true;
         if (deal === 'true') filter.deal = true;
 
-        // Price range filter
+
         const minP = priceMin !== undefined ? parseFloat(priceMin as string) : undefined;
         const maxP = priceMax !== undefined ? parseFloat(priceMax as string) : undefined;
         if (minP !== undefined || maxP !== undefined) {
