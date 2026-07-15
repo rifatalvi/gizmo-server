@@ -27,10 +27,10 @@ export async function connectToMongoDB(): Promise<void> {
                 // Get all indexes
                 const indexes = await col.indexes();
                 // Find the existing text index
-                const textIndex = indexes.find((idx: any) => 
+                const textIndex = indexes.find((idx: any) =>
                     Object.values(idx.key).includes('text') || idx.name.includes('text')
                 );
-                if (textIndex) {
+                if (textIndex && textIndex.name) {
                     await col.dropIndex(textIndex.name);
                     console.log(`🗑️ Dropped old text index: ${textIndex.name}`);
                     // Try creating again
