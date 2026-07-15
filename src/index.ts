@@ -6,6 +6,7 @@ import productsRouter from './routes/products';
 import cartRouter from './routes/cart';
 import ordersRouter from './routes/orders';
 import checkoutRouter from './routes/checkout';
+import wishlistRouter from './routes/wishlist';
 
 const app = express();
 const PORT = process.env.PORT ?? 5000;
@@ -27,6 +28,7 @@ app.use('/api/products', productsRouter);
 app.use('/api/cart', cartRouter);
 app.use('/api/orders', ordersRouter);
 app.use('/api/checkout', checkoutRouter);
+app.use('/api/wishlists', wishlistRouter);
 // ajjaj
 // ── Start ───────────────────────────────────────────────────
 if (process.env.NODE_ENV !== 'production') {

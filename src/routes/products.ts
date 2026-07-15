@@ -51,9 +51,9 @@ router.get('/', async (req: Request, res: Response) => {
             if (minR > 0) filter.rating = { $gte: minR };
         }
 
-        // Text search across name, brand, category, description, tags
+        // Text search — regex across key fields (compatible with all filter combinations)
         if (search) {
-            const regex = new RegExp(search as string, 'i');
+            const regex = new RegExp((search as string).trim(), 'i');
             filter.$or = [
                 { name: regex },
                 { brand: regex },
