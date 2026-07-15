@@ -1,5 +1,4 @@
 import type { Request, Response, NextFunction } from "express";
-import { jwtVerify } from "jose";
 
 const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-change-in-production";
 const secretKey = new TextEncoder().encode(JWT_SECRET);
@@ -22,6 +21,7 @@ export async function authenticate(req: AuthRequest, res: Response, next: NextFu
   }
 
   try {
+    const { jwtVerify } = await import("jose");
     const { payload } = await jwtVerify(token, secretKey);
     req.userId = payload.userId as string;
     next();

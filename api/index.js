@@ -2,8 +2,6 @@ require('dotenv/config');
 const express = require('express');
 const cors = require('cors');
 const { MongoClient, ObjectId } = require('mongodb');
-const { jwtVerify } = require('jose');
-
 // ── JWT Auth Middleware ──────────────────────────────────────────
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change-in-production';
 
@@ -15,6 +13,7 @@ async function authenticate(req, res, next) {
     const token = header.split(' ')[1];
     if (!token) return res.status(401).json({ message: 'Malformed token' });
     try {
+        const { jwtVerify } = await import('jose');
         const secretKey = new TextEncoder().encode(JWT_SECRET);
         const { payload } = await jwtVerify(token, secretKey);
         req.userId = payload.userId;
