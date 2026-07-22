@@ -65,8 +65,19 @@ router.patch('/:id/status', async (req: Request, res: Response) => {
     try {
         const col = db().collection<Order>('orders');
         const { status } = req.body;
+        
+        const idStr = req.params.id as string;
+        let objId;
+        try {
+            objId = new ObjectId(idStr);
+        } catch {
+            // ignore
+        }
+
+        const filter = objId ? { $or: [{ _id: objId }, { _id: idStr }] } : { _id: idStr };
+
         await col.updateOne(
-            { _id: new ObjectId(req.params.id as string) },
+            filter as any,
             { $set: { status, updatedAt: new Date() } }
         );
         res.json({ success: true });
